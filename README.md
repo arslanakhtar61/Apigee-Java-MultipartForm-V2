@@ -1,12 +1,27 @@
 # Apigee Multipart Form Callout
 
 This directory contains the Java source code and pom.xml file required to build
-a Java callout for Apigee that creates a multipart form payload, 
-or parses an inbound multipart form payload.
+a Java callout for Apigee that creates a multipart form payload, or parses an
+inbound payload with MIME-type `multipart/form-data`, as is defined by [IETF RFC
+7578](https://www.rfc-editor.org/rfc/rfc7578).
+
+
+There is a different callout, created some time ago, available at
+[Apigee-Java-Simple-MultipartForm](https://github.com/DinoChiesa/Apigee-Java-Simple-MultipartForm).
+That one has a few external dependencies, which then brought in dependencies on
+the Servlet API, and some other things. I thought that was less than optimal,
+for just a stream parsing / consolidation tool.  Also there were two ways to
+configure it, and explaining and supporting those two ways was somewhat
+complicated. And I have not tested it on Apigee X.
+
+I created this new implementation, for the same purpose: creating and parsing
+`multipart/form-data` payloads. This one has fewer external dependencies - only
+one for reading/parsing JSON. It works similarly, but is simpler.
 
 ## Disclaimer
 
-This example is not an official Google product, nor is it part of an official Google product.
+This example is not an official Google product, nor is it part of an official
+Google product.
 
 
 ## Using this policy
@@ -113,7 +128,7 @@ that form:
 
 2. the second part will be a file, with content-type = image/png, named part2.png, using
    content from a variable named `base64-image-bytes`.  That string will be base64 decoded
-   before being placed into the form. 
+   before being placed into the form.
 
 
 How you get the data into the specified variables is up to you! The result of
@@ -138,7 +153,8 @@ PNG
 
 There is one additional possible field in the descriptor, not shown above
 `transfer-encoding`. If it is present, then the policy will add a header
-specifying that content-transfer-encoding for the given part.  For example, to send a base64-encoded file and mark it as such, use this as a descriptor:
+specifying that `content-transfer-encoding` for the given part.  For example, to
+send a base64-encoded file and mark it as such, use this as a descriptor:
 
 ```
     {
@@ -162,6 +178,9 @@ Content-Transfer-Encoding: base64
 iVBOR...base64-encoded data here...
 ----------------------73B8NBN4LFYLBB--
 ```
+
+The `content-transfer-encoding` header has been deprecated by [RFC
+7578](https://www.rfc-editor.org/rfc/rfc7578#section-4.7).
 
 
 ## MultipartFormParserV2
