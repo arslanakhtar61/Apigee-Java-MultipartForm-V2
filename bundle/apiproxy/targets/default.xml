@@ -1,0 +1,32 @@
+<TargetEndpoint name='default'>
+  <Description>default target endpoint</Description>
+  <FaultRules>
+    <FaultRule name='other-fault'>
+      <!-- This FaultRule always catches all uncaught faults. -->
+      <Step>
+        <Name>JS-MaybeFormatFault</Name>
+      </Step>
+    </FaultRule>
+  </FaultRules>
+
+  <DefaultFaultRule>
+    <AlwaysEnforce>true</AlwaysEnforce>
+    <Step>
+      <Name>AM-Inject-Proxy-Revision-Header</Name>
+    </Step>
+  </DefaultFaultRule>
+
+  <Flows/>
+
+  <PreFlow name='PreFlow'>
+    <Request>
+    </Request>
+    <Response>
+    </Response>
+  </PreFlow>
+
+  <HTTPTargetConnection>
+    <URL>https://echo.dchiesa.demo.altostrat.com</URL>
+  </HTTPTargetConnection>
+
+</TargetEndpoint>

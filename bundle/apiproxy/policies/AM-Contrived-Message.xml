@@ -1,0 +1,7 @@
+<AssignMessage name='AM-Contrived-Message'>
+  <AssignTo createNew='true' type="request">contrivedMessage</AssignTo>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  <Set>
+    <Verb>POST</Verb>
+  </Set>
+</AssignMessage>

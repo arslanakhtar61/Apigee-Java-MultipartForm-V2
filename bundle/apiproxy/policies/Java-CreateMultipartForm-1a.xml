@@ -1,0 +1,15 @@
+<JavaCallout name='Java-CreateMultipartForm-1a' continueOnError='true'>
+  <Properties>
+    <Property name="descriptor">
+    {
+      "image.png" : {
+        "content-var" :  "base64EncodedImageData",
+        "content-type" : "image/png",
+        "want-b64-decode": true
+      }
+    }
+    </Property>
+  </Properties>
+  <ClassName>com.google.apigee.callouts.MultipartFormCreatorV2</ClassName>
+  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+</JavaCallout>

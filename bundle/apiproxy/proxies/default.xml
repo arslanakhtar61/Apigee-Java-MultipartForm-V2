@@ -1,0 +1,151 @@
+<ProxyEndpoint name="default">
+  <Description>Proxy for Java callout MultipartForm</Description>
+  <HTTPProxyConnection>
+    <BasePath>/multipart-form</BasePath>
+    <Properties/>
+    <VirtualHost>secure</VirtualHost>
+  </HTTPProxyConnection>
+
+  <FaultRules/>
+  <DefaultFaultRule>
+    <AlwaysEnforce>true</AlwaysEnforce>
+    <Step>
+      <Name>AM-Inject-Proxy-Revision-Header</Name>
+    </Step>
+  </DefaultFaultRule>
+
+  <PreFlow name="PreFlow">
+    <Request/>
+    <Response>
+      <Step>
+        <Name>AM-Clean-Request-Headers-From-Response</Name>
+      </Step>
+    </Response>
+  </PreFlow>
+
+  <PostFlow name="PostFlow">
+    <Request/>
+    <Response>
+      <Step>
+        <Name>AM-Inject-Proxy-Revision-Header</Name>
+      </Step>
+    </Response>
+  </PostFlow>
+
+  <PostClientFlow name="PostFlow">
+    <Request/>
+    <Response>
+    </Response>
+  </PostClientFlow>
+
+  <Flows>
+    <Flow name="test create a multi-part form with multiple parts">
+      <Description>Create a multi-part form in a new message</Description>
+      <Request>
+        <Step>
+          <Name>AV-TextFileData</Name>
+        </Step>
+        <Step>
+          <Name>AV-ImageData</Name>
+        </Step>
+        <Step>
+          <Name>AM-Contrived-Message</Name>
+        </Step>
+        <Step>
+          <Name>Java-CreateMultipartForm-Multi</Name>
+        </Step>
+      </Request>
+
+      <Response>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/create-multi") and (request.verb = "POST")</Condition>
+    </Flow>
+
+    <Flow name="test create 1">
+      <Description>Create a multi-part form with a single part</Description>
+      <Request>
+        <Step>
+          <Name>AV-ImageData</Name>
+        </Step>
+        <Step>
+          <Name>Java-CreateMultipartForm-1a</Name>
+        </Step>
+      </Request>
+
+      <Response>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/create-1a") and (request.verb = "POST")</Condition>
+    </Flow>
+
+    <Flow name="test create 2">
+      <Description>Create a multi-part form with a signle part, in a new message</Description>
+      <Request>
+        <Step>
+          <Name>AV-TextFileData</Name>
+        </Step>
+        <Step>
+          <Name>Java-CreateMultipartForm-1b</Name>
+        </Step>
+      </Request>
+
+      <Response>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/create-1b") and (request.verb = "POST")</Condition>
+    </Flow>
+
+
+    <Flow name="test parse 1">
+      <Description>Parse a multi-part form in the inbound message</Description>
+      <Request>
+        <Step>
+          <Name>Java-ParseMultipartForm-1</Name>
+        </Step>
+      </Request>
+
+      <Response>
+        <Step>
+          <Name>AM-Response-2</Name>
+        </Step>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/parse-1") and (request.verb = "POST")</Condition>
+    </Flow>
+
+    <Flow name="test parse 2">
+      <Description>Parse a multi-part form in the inbound message, reply with the bytes of the 2nd part</Description>
+      <Request>
+        <Step>
+          <Name>Java-ParseMultipartForm-1</Name>
+        </Step>
+      </Request>
+
+      <Response>
+        <Step>
+          <Name>AM-Response-2</Name>
+        </Step>
+        <Step>
+          <Name>Java-SetResponseContent</Name>
+        </Step>
+      </Response>
+      <Condition>(proxy.pathsuffix MatchesPath "/parse-2") and (request.verb = "POST")</Condition>
+    </Flow>
+
+
+    <Flow name="unknown request">
+      <Request>
+        <Step>
+          <Name>RF-UnknownRequest</Name>
+        </Step>
+      </Request>
+      <Response/>
+    </Flow>
+
+  </Flows>
+
+  <RouteRule name="InvokeRouteRule">
+    <TargetEndpoint>default</TargetEndpoint>
+    <Condition>proxy.pathsuffix ~~ "/create-[a-z0-9]{2,}"</Condition>
+  </RouteRule>
+
+  <RouteRule name="Loopback"/>
+
+</ProxyEndpoint>

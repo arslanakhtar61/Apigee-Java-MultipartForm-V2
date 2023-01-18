@@ -1,0 +1,40 @@
+<ServiceCallout name='SC-SendForm'>
+<!--
+  <Request>
+    <Copy source="contrivedMessage"/>
+    <Set>
+      <Verb>POST</Verb>
+    </Set>
+  </Request>
+-->
+
+<!--
+  <Request>
+    <Set>
+      <Verb>POST</Verb>
+      <Payload>foo</Payload>
+      <Headers>
+        <Header name='content-type'>text/plain</Header>
+      </Headers>
+    </Set>
+  </Request>
+-->
+
+  <Request clearPayload="false" variable="contrivedMessage">
+    <Set>
+      <Verb>POST</Verb>
+    </Set>
+  </Request>
+
+  <Response>scResponse</Response>
+  <HTTPTargetConnection>
+    <SSLInfo>
+      <Enabled>true</Enabled>
+      <IgnoreValidationErrors>true</IgnoreValidationErrors>
+    </SSLInfo>
+    <Properties>
+      <Property name='success.codes'>2xx, 3xx, 5xx</Property>
+    </Properties>
+    <URL>https://echo.dchiesa.demo.altostrat.com/</URL>
+  </HTTPTargetConnection>
+</ServiceCallout>

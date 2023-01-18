@@ -1,0 +1,8 @@
+<JavaCallout name='Java-ParseMultipartForm-1'>
+  <Properties>
+    <Property name="source">message</Property>
+    <Property name="debug">true</Property>
+  </Properties>
+  <ClassName>com.google.apigee.callouts.MultipartFormParserV2</ClassName>
+  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+</JavaCallout>
