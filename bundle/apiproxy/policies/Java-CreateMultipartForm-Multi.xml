@@ -20,5 +20,5 @@
     <Property name="destination">message</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.MultipartFormCreatorV2</ClassName>
-  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+  <ResourceURL>java://apigee-multipart-form-20230628.jar</ResourceURL>
 </JavaCallout>

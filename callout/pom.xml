@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.apigee.callout</groupId>
   <artifactId>apigee-multipart-form</artifactId>
-  <version>20230117</version>
+  <version>20230628</version>
   <name>ApigeeCustomMultipartFormV2</name>
   <url>http://maven.apache.org</url>
   <packaging>jar</packaging>
@@ -117,7 +117,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <configuration>
           <showDeprecation>true</showDeprecation>
           <source>${java.version}</source>
@@ -132,7 +132,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
+        <version>3.3.0</version>
         <configuration>
           <archive>
             <!-- do not include the pom.xml file in the generated jar -->
@@ -144,7 +144,7 @@ mvn install:install-file \
 
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>3.1.0</version>
         <executions>
           <execution>
             <id>ant1</id>
@@ -177,17 +177,6 @@ mvn install:install-file \
                     <include name="lib/*.jar"/>
                     <exclude name="lib/message-flow-1.0.0.jar"/>
                     <exclude name="lib/expressions-1.0.0.jar"/>
-
-                    <!-- guava and its dependencies -->
-                    <exclude name="lib/guava-*.jar"/>
-                    <exclude name="lib/jsr305-*.jar"/>
-                    <exclude name="lib/failureaccess-*.jar"/>
-                    <exclude name="lib/listenablefuture-*.jar"/>
-                    <exclude name="lib/error_prone_annotations-*.jar"/>
-                    <exclude name='lib/j2objc-annotations-*.jar'/>
-                    <exclude name='lib/checker-qual-*.jar'/>
-
-                    <exclude name='lib/javax.servlet-api-*.jar'/>
                   </fileset>
                   <mapper type="flatten"/>
                 </copy>
@@ -200,7 +189,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M3</version>
+        <version>3.3.0</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
@@ -221,7 +210,7 @@ mvn install:install-file \
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.8.1</version>
+        <version>2.15.0</version>
         <executions>
           <execution>
             <phase>compile</phase>

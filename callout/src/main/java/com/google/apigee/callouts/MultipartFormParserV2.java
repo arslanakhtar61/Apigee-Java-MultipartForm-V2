@@ -91,6 +91,11 @@ public class MultipartFormParserV2 extends CalloutBase implements Execution {
               names.add(fileName);
               msgCtxt.setVariable(varName("item_filename_" + numFound), fileName);
               msgCtxt.setVariable(varName("item_content_" + numFound), part.getPartContent());
+              if ("text/plain".equals(part.getContentType())) {
+                msgCtxt.setVariable(
+                    varName("item_content_" + numFound + "_string"),
+                    new String(part.getPartContent()));
+              }
               msgCtxt.setVariable(varName("item_content-type_" + numFound), part.getContentType());
               msgCtxt.setVariable(varName("item_size_" + numFound), part.getSize() + "");
             }
@@ -100,11 +105,14 @@ public class MultipartFormParserV2 extends CalloutBase implements Execution {
         if (names.size() > 0) {
           msgCtxt.setVariable(varName("items"), String.join(", ", names));
         }
-
       } finally {
       }
       return ExecutionResult.SUCCESS;
     } catch (IllegalStateException exc1) {
+      if (getDebug()) {
+        String stacktrace = getStackTraceAsString(exc1);
+        msgCtxt.setVariable(varName("stacktrace"), stacktrace);
+      }
       setExceptionVariables(exc1, msgCtxt);
       return ExecutionResult.ABORT;
     } catch (Exception e) {

@@ -6,5 +6,5 @@
     <Property name="contentType">{mpf_item_content-type_1}</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.ContentSetter</ClassName>
-  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+  <ResourceURL>java://apigee-multipart-form-20230628.jar</ResourceURL>
 </JavaCallout>

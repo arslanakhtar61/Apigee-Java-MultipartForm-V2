@@ -34,8 +34,8 @@ instructions, you should be able to figure it out if you know and use
 maven.
 
 1. copy the jar file, available in
-   target/apigee-multipart-form-20230117.jar , if you have built the
-   jar, or in [the repo](bundle/apiproxy/resources/java/apigee-multipart-form-20230117.jar)
+   target/apigee-multipart-form-20230628.jar , if you have built the
+   jar, or in [the repo](bundle/apiproxy/resources/java/apigee-multipart-form-20230628.jar)
    if you have not, to your apiproxy/resources/java directory. You can
    do this offline, or using the graphical Proxy Editor in the Apigee
    Admin UI.
@@ -48,7 +48,7 @@ maven.
     <JavaCallout name='Java-Multipart-Form-1'>
         ...
       <ClassName>com.google.apigee.callouts.MultipartFormCreatorV2</ClassName>
-      <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+      <ResourceURL>java://apigee-multipart-form-20230628.jar</ResourceURL>
     </JavaCallout>
    ```
 
@@ -56,10 +56,23 @@ maven.
 
 3. use the Apigee UI, or a command-line tool like
    [importAndDeploy.js](https://github.com/DinoChiesa/apigee-edge-js/blob/master/examples/importAndDeploy.js) or
-   [apigeetool](https://github.com/apigee/apigeetool-node)
+   [apigeecli](https://github.com/apigee/apigeecli)
    or similar to
    import your proxy into an Apigee organization, and then deploy the proxy .
-   Eg, `./importAndDeploy.js --token $TOKEN -v -o $ORG -e $ENV -d bundle/`
+   Examples:
+   ```sh
+   ORG=my-org
+   ENV=eval
+   importAndDeploy.js --token $TOKEN -v -o $ORG -e $ENV -d bundle/`
+   ```
+   or
+   ```sh
+   ORG=my-org
+   ENV=eval
+   apigeecli apis create bundle -f ./bundle/apiproxy --name multipart-form -o $ORG  --token $TOKEN
+   apigeecli apis deploy --wait --name multipart-form --ovr --rev 1 --org $ORG --env $ENV --token "$TOKEN"
+   ```
+
 
 4. Use a client to generate and send http requests to the proxy you just deployed . Eg,
    ```
@@ -115,7 +128,7 @@ An example for creating a form:
     </Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.MultipartFormCreatorV2</ClassName>
-  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+  <ResourceURL>java://apigee-multipart-form-20230628.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -201,7 +214,7 @@ An example for parsing a form:
     <Property name="source">message</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.MultipartFormParserV2</ClassName>
-  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+  <ResourceURL>java://apigee-multipart-form-20230628.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -281,7 +294,7 @@ Example:
     <Property name="contentType">{mpf_item_content-type_1</Property>
   </Properties>
   <ClassName>com.google.apigee.callouts.ContentSetter</ClassName>
-  <ResourceURL>java://apigee-multipart-form-20230117.jar</ResourceURL>
+  <ResourceURL>java://apigee-multipart-form-20230628.jar</ResourceURL>
 </JavaCallout>
 ```
 
@@ -328,10 +341,25 @@ Invoke it like this:
     curl -i -X POST -d '' $endpoint/multipart-form/create-1b
   ```
 
-* Parse a form
+* Parse a multipart-form request
 
+  You can use curl to create a multi-part form request.  Some examples:
+
+  This form will have 2 parts: both files, one plaintext and one an image:
   ```
-    curl -i -F field=value -F readme=@README.md $endpoint/multipart-form/parse-1
+  curl -i \
+    -F README.md=@README.md \
+    -F image.png=@callout/src/test/resources/test-data/Logs_512px.png \
+    $endpoint/multipart-form/parse-1
+  ```
+
+  This form will have 2 parts: a regular field, as well as one file.
+  ```
+  curl -i \
+    -F field1=value-goes-here \
+    -F image.png=@callout/src/test/resources/test-data/Logs_512px.png \
+    $endpoint/multipart-form/parse-1
+
   ```
 
 
@@ -368,3 +396,7 @@ Proxy configuration.
 
 * The automated tests are pretty thin.
 * There is no way to adjust the size limit for the uploaded files.
+
+
+
+
