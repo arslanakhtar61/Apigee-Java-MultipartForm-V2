@@ -112,4 +112,49 @@ public class TestMultipartFormParser extends TestBase {
     Assert.assertTrue(ctype2 instanceof String);
     Assert.assertEquals(ctype2, "image/png");
   }
+
+  @Test
+  public void parse_Simple_with_multiline_dataField() throws Exception {
+    Message msg = msgCtxt.getMessage();
+    byte[] payloadBytes = loadImageBytes("MultiPart-payload.3.out");
+    msg.setContent(new ByteArrayInputStream(payloadBytes));
+    msg.setHeader(
+        "content-type", "multipart/form-data; boundary=----------------------QCN1DGMIPH8GPY");
+
+    Properties props = new Properties();
+    props.put("source", "message");
+    props.put("debug", "true");
+
+    MultipartFormParserV2 callout = new MultipartFormParserV2(props);
+
+    // execute and retrieve output
+    ExecutionResult actualResult = callout.execute(msgCtxt, exeCtxt);
+    ExecutionResult expectedResult = ExecutionResult.SUCCESS;
+    Assert.assertEquals(actualResult, expectedResult, "ExecutionResult");
+
+    // check result and output
+    Object error = msgCtxt.getVariable("mpf_error");
+    Assert.assertNull(error, "error");
+
+    Object stacktrace = msgCtxt.getVariable("mpf_stacktrace");
+    Assert.assertNull(stacktrace, "stacktrace");
+
+    Object ctype1 = msgCtxt.getVariable("mpf_item_content-type_1");
+    Assert.assertTrue(ctype1 instanceof String);
+    Assert.assertEquals(ctype1, "text/plain");
+
+    Object content1 = msgCtxt.getVariable("mpf_item_content_1_string");
+    Assert.assertTrue(content1 instanceof String);
+    Assert.assertEquals(content1, "{\n \"foo\": \"bar\",\n \"notes\":\"more JSON Payload here...\"\n}", "plain text content");
+
+    Object content2 = msgCtxt.getVariable("mpf_item_content_2");
+    Assert.assertTrue(content2 instanceof byte[]);
+    String filename = (String) msgCtxt.getVariable("mpf_item_filename_2");
+
+    writeToFile((byte[]) content2, new File("output-" + filename));
+
+    Object ctype2 = msgCtxt.getVariable("mpf_item_content-type_2");
+    Assert.assertTrue(ctype2 instanceof String);
+    Assert.assertEquals(ctype2, "image/png");
+  }
 }
