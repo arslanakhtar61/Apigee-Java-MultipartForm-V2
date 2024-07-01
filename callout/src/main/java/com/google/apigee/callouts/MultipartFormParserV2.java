@@ -27,6 +27,7 @@ import com.google.apigee.stream.StreamSearcher;
 import java.io.BufferedInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,23 @@ public class MultipartFormParserV2 extends CalloutBase implements Execution {
       if (!ctype.startsWith("multipart/form-data; boundary=")) {
         throw new IllegalStateException("content-type does not contain multipart/form-data");
       }
-      String boundary = ctype.substring("multipart/form-data; boundary=".length());
+      String[] ctypeArray = ctype.split(";");
+      List<String> ctypeList = Arrays.asList(ctypeArray);
+      String boundary = ctypeList
+          .stream()
+          .filter(ct -> ct.toLowerCase().contains("boundary"))
+          .map(ct -> {
+            String[] cta = ct.split("=");
+            if (cta.length == 2) {
+              return cta[1];
+            }
+            return "";
+          })
+          .findFirst()
+          .orElse("");
+      if (boundary.isEmpty()) {
+        throw new IllegalStateException("multipart/form-data content-type does not contain 'boundary'");
+      }
 
       StreamSearcher searcher = new StreamSearcher(boundary.getBytes(StandardCharsets.UTF_8));
       List<String> names = new ArrayList<String>();
@@ -114,7 +131,7 @@ public class MultipartFormParserV2 extends CalloutBase implements Execution {
         msgCtxt.setVariable(varName("stacktrace"), stacktrace);
       }
       setExceptionVariables(exc1, msgCtxt);
-      return ExecutionResult.ABORT;
+      return ExecutionResult.SUCCESS;
     } catch (Exception e) {
       if (getDebug()) {
         String stacktrace = getStackTraceAsString(e);

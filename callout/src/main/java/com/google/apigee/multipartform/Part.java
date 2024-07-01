@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -139,7 +140,14 @@ public class Part {
     if (contentType == null) {
       this.contentType = "text/plain";
     } else {
-      this.contentType = contentType;
+      this.contentType =  Optional.of(contentType)
+          .map(ct -> {
+            String[] cta = ct.split(";");
+            if (cta.length > 0) {
+              return cta[0];
+            }
+            return null;
+          }).orElse(null);
     }
     return this;
   }

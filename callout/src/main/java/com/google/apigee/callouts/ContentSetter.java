@@ -84,14 +84,14 @@ public class ContentSetter extends CalloutBase implements Execution {
       return ExecutionResult.SUCCESS;
     } catch (IllegalStateException exc1) {
       setExceptionVariables(exc1, msgCtxt);
-      return ExecutionResult.ABORT;
+      return ExecutionResult.SUCCESS;
     } catch (Exception e) {
       if (getDebug()) {
         String stacktrace = getStackTraceAsString(e);
         msgCtxt.setVariable(varName("stacktrace"), stacktrace);
       }
       setExceptionVariables(e, msgCtxt);
-      return ExecutionResult.ABORT;
+      return ExecutionResult.SUCCESS;
     }
   }
 }

@@ -21,6 +21,7 @@ import com.apigee.flow.message.Message;
 import com.apigee.flow.message.MessageContext;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
@@ -32,7 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 import mockit.Mock;
 import mockit.MockUp;
+import org.apache.commons.io.FileUtils;
 import org.testng.annotations.BeforeMethod;
+
 
 public abstract class TestBase {
   protected static final String testDataDir = "src/test/resources/test-data";
@@ -194,5 +197,14 @@ public abstract class TestBase {
     InputStream imageInputStream = Files.newInputStream(path);
     byte[] imageBytes = readAll(imageInputStream);
     return imageBytes;
+  }
+
+  protected static byte[] loadFileBytes(String filename) throws IOException {
+    Path path = Paths.get(testDataDir, filename);
+    if (!Files.exists(path)) {
+      throw new IOException("file(" + path.toString() + ") not found");
+    }
+    byte[] byteArray = FileUtils.readFileToByteArray(new File(path.toFile().toURI()));
+    return byteArray;
   }
 }
