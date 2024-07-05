@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Part {
   private byte[] partContent;
@@ -137,18 +138,18 @@ public class Part {
   }
 
   public Part withContentType(String contentType) {
-    if (contentType == null) {
-      this.contentType = "text/plain";
-    } else {
-      this.contentType =  Optional.of(contentType)
-          .map(ct -> {
-            String[] cta = ct.split(";");
-            if (cta.length > 0) {
-              return cta[0];
-            }
-            return null;
-          }).orElse(null);
-    }
+    this.contentType =  Optional.ofNullable(contentType)
+        .map(ct -> ct.split(";"))
+        .filter(cta -> cta.length > 0)
+        .flatMap(cta -> Arrays.stream(cta)
+            .map(String::trim)
+            .map(String::toLowerCase)
+            .filter(ct ->
+              Stream.of("text/", "application/", "image/", "audio/", "video/", "font/")
+                  .anyMatch(ct::contains)
+            )
+            .findFirst())
+        .orElse("text/plain");
     return this;
   }
 

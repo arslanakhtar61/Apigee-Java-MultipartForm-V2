@@ -64,18 +64,22 @@ public class MultipartFormParserV2 extends CalloutBase implements Execution {
       if (ctype == null) {
         throw new IllegalStateException("missing content-type header");
       }
-      if (!ctype.startsWith("multipart/form-data; boundary=")) {
+      if (!ctype.contains("multipart/form-data")) {
         throw new IllegalStateException("content-type does not contain multipart/form-data");
+      }
+      if (!ctype.contains("boundary")) {
+        throw new IllegalStateException("content-type does not contain boundary parameter");
       }
       String[] ctypeArray = ctype.split(";");
       List<String> ctypeList = Arrays.asList(ctypeArray);
       String boundary = ctypeList
           .stream()
+          .map(String::trim)
           .filter(ct -> ct.toLowerCase().contains("boundary"))
           .map(ct -> {
             String[] cta = ct.split("=");
             if (cta.length == 2) {
-              return cta[1];
+              return cta[1].trim();
             }
             return "";
           })
